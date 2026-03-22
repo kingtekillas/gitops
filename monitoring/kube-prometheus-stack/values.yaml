@@ -1,0 +1,43 @@
+grafana:
+  adminPassword: change-me-now
+
+  persistence:
+    enabled: true
+    storageClassName: hostpath
+    accessModes:
+      - ReadWriteOnce
+    size: 5Gi
+
+  service:
+    type: ClusterIP
+
+  defaultDashboardsEnabled: true
+
+prometheus:
+  prometheusSpec:
+    retention: 3d
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: hostpath
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 10Gi
+
+alertmanager:
+  alertmanagerSpec:
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: hostpath
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 2Gi
+
+kubeStateMetrics:
+  enabled: true
+
+nodeExporter:
+  enabled: true
