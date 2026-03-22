@@ -11,7 +11,7 @@ spec:
         spec:
           containers:
             - name: backup
-              image: bitnami/mariadb:11.2
+              image: docker.io/bitnamilegacy/mariadb:11.4.6-debian-12-r0
               command:
                 - /bin/bash
                 - -c
