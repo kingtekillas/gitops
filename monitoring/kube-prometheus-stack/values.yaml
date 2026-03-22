@@ -25,6 +25,9 @@ grafana:
 
   defaultDashboardsEnabled: true
 
+crds:
+  enabled: true
+
 nodeExporter:
   enabled: false
 
