@@ -13,6 +13,8 @@ spec:
       chart: ingress-nginx
       targetRevision: 4.15.1
       helm:
+        releaseName: ingress-nginx
+        namespace: ingress-nginx
         valueFiles:
           - $values/infrastructure/ingress-nginx/values.yaml
     - repoURL: https://github.com/kingtekillas/gitops.git
