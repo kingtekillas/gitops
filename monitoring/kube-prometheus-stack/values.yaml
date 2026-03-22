@@ -11,6 +11,18 @@ grafana:
   service:
     type: ClusterIP
 
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: local-selfsigned
+    hosts:
+      - grafana.local
+    tls:
+      - secretName: grafana-tls
+        hosts:
+          - grafana.local
+
   defaultDashboardsEnabled: true
 
 prometheus:
@@ -20,7 +32,8 @@ prometheus:
       volumeClaimTemplate:
         spec:
           storageClassName: hostpath
-          accessModes: ["ReadWriteOnce"]
+          accessModes:
+            - ReadWriteOnce
           resources:
             requests:
               storage: 10Gi
@@ -31,13 +44,8 @@ alertmanager:
       volumeClaimTemplate:
         spec:
           storageClassName: hostpath
-          accessModes: ["ReadWriteOnce"]
+          accessModes:
+            - ReadWriteOnce
           resources:
             requests:
               storage: 2Gi
-
-kubeStateMetrics:
-  enabled: true
-
-nodeExporter:
-  enabled: true
