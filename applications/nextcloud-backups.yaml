@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nextcloud-backups
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: nextcloud
+  source:
+    repoURL: https://github.com/kingtekillas/gitops.git
+    targetRevision: main
+    path: backups/nextcloud
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
