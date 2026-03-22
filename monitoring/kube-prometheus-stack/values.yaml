@@ -25,6 +25,9 @@ grafana:
 
   defaultDashboardsEnabled: true
 
+nodeExporter:
+  enabled: false
+
 prometheus:
   prometheusSpec:
     retention: 3d
