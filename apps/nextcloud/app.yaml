@@ -15,7 +15,7 @@ spec:
       helm:
         valueFiles:
           - $values/apps/nextcloud/values.yaml
-    - repoURL: https://github.com/YOURUSER/my-gitops.git
+    - repoURL: https://github.com/kingtekillas/gitops.git
       targetRevision: main
       ref: values
   syncPolicy:
