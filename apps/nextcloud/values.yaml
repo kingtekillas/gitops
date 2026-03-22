@@ -7,18 +7,6 @@ nextcloud:
   password: change-me-now
   email: admin@example.local
 
-internalDatabase:
-  enabled: true
-  name: nextcloud
-  username: nextcloud
-  password: nextcloudpass
-
-persistence:
-  enabled: true
-  storageClass: hostpath
-  accessMode: ReadWriteOnce
-  size: 20Gi
-
 ingress:
   enabled: true
   className: nginx
@@ -28,3 +16,45 @@ ingress:
     - secretName: nextcloud-tls
       hosts:
         - nextcloud.local
+
+persistence:
+  enabled: true
+  storageClass: hostpath
+  accessMode: ReadWriteOnce
+  size: 20Gi
+
+internalDatabase:
+  enabled: false
+
+externalDatabase:
+  enabled: true
+  type: mysql
+  host: nextcloud-mariadb
+  database: nextcloud
+  user: nextcloud
+  password: change-db-password
+
+mariadb:
+  enabled: true
+  architecture: standalone
+  auth:
+    database: nextcloud
+    username: nextcloud
+    password: change-db-password
+    rootPassword: change-root-password
+  primary:
+    persistence:
+      enabled: true
+      storageClass: hostpath
+      size: 8Gi
+
+redis:
+  enabled: true
+  auth:
+    password: change-redis-password
+  master:
+    persistence:
+      enabled: true
+  replica:
+    persistence:
+      enabled: true
