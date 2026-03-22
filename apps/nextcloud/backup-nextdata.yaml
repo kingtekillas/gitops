@@ -1,0 +1,33 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: nextcloud-files-backup
+  namespace: nextcloud
+spec:
+  schedule: "30 */6 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: backup
+              image: alpine
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  TIMESTAMP=$(date +%F-%H-%M)
+                  cp -r /data /backup/data-$TIMESTAMP
+              volumeMounts:
+                - name: nextcloud-data
+                  mountPath: /data
+                - name: backup-storage
+                  mountPath: /backup
+          restartPolicy: OnFailure
+          volumes:
+            - name: nextcloud-data
+              persistentVolumeClaim:
+                claimName: nextcloud-nextcloud
+            - name: backup-storage
+              persistentVolumeClaim:
+                claimName: nextcloud-backup-pvc

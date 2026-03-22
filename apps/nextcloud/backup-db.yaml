@@ -1,0 +1,35 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: nextcloud-db-backup
+  namespace: nextcloud
+spec:
+  schedule: "0 */6 * * *" # every 6 hours
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: backup
+              image: bitnami/mariadb:11.2
+              command:
+                - /bin/bash
+                - -c
+                - |
+                  TIMESTAMP=$(date +%F-%H-%M)
+                  mysqldump \
+                    -h nextcloud-mariadb \
+                    -u nextcloud \
+                    -p$MYSQL_PASSWORD \
+                    nextcloud > /backup/db-$TIMESTAMP.sql
+              env:
+                - name: MYSQL_PASSWORD
+                  value: change-db-password
+              volumeMounts:
+                - name: backup-storage
+                  mountPath: /backup
+          restartPolicy: OnFailure
+          volumes:
+            - name: backup-storage
+              persistentVolumeClaim:
+                claimName: nextcloud-backup-pvc
