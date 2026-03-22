@@ -47,6 +47,9 @@ mariadb:
       enabled: true
       storageClass: hostpath
       size: 8Gi
+  image:
+    repository: docker.io/bitnami/mariadb
+    tag: "11.2.4"
 
 redis:
   enabled: true
