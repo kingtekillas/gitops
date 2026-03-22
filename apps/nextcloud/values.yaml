@@ -1,0 +1,30 @@
+image:
+  flavor: apache
+
+nextcloud:
+  host: nextcloud.local
+  username: admin
+  password: change-me-now
+  email: admin@example.local
+
+internalDatabase:
+  enabled: true
+  name: nextcloud
+  username: nextcloud
+  password: nextcloudpass
+
+persistence:
+  enabled: true
+  storageClass: hostpath
+  accessMode: ReadWriteOnce
+  size: 20Gi
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: local-selfsigned
+  tls:
+    - secretName: nextcloud-tls
+      hosts:
+        - nextcloud.local
