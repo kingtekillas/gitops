@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: host-alerts
+  namespace: monitoring
+spec:
+  groups:
+    - name: host-alerts
+      rules:
+        - alert: LowDiskSpace
+          expr: (node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"}) * 100 < 15
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: Low disk space
+            description: Root filesystem has less than 15% free on {{ $labels.instance }}
