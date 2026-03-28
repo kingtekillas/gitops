@@ -19,7 +19,7 @@ ingress:
 
 persistence:
   enabled: true
-  storageClass: hostpath
+  storageClass: local-path
   accessMode: ReadWriteOnce
   size: 20Gi
 
@@ -45,7 +45,7 @@ mariadb:
   primary:
     persistence:
       enabled: true
-      storageClass: hostpath
+      storageClass: local-path
       size: 8Gi
   # image:
   #   registry: docker.io

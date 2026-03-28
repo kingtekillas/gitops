@@ -3,7 +3,7 @@ grafana:
 
   persistence:
     enabled: true
-    storageClassName: hostpath
+    storageClassName: local-path
     accessModes:
       - ReadWriteOnce
     size: 5Gi
@@ -37,7 +37,7 @@ prometheus:
     storageSpec:
       volumeClaimTemplate:
         spec:
-          storageClassName: hostpath
+          storageClassName: local-path
           accessModes:
             - ReadWriteOnce
           resources:
@@ -49,7 +49,7 @@ alertmanager:
     storage:
       volumeClaimTemplate:
         spec:
-          storageClassName: hostpath
+          storageClassName: local-path
           accessModes:
             - ReadWriteOnce
           resources:
