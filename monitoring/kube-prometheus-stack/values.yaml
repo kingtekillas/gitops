@@ -34,7 +34,7 @@ nodeExporter:
 prometheus:
   ingress:
     enabled: true
-    ingressClassName: nginx
+    ingressClassName: traefik
     hosts:
       - prometheus.local
   prometheusSpec:
@@ -55,7 +55,7 @@ nodeExporter:
 alertmanager:
   ingress:
     enabled: true
-    ingressClassName: nginx
+    ingressClassName: traefik
     hosts:
       - alertmanager.local
   alertmanagerSpec:
