@@ -44,7 +44,7 @@ prometheus:
             requests:
               storage: 10Gi
 
-prometheus-node-exporter:
+nodeExporter:
   enabled: true
 
 alertmanager:
