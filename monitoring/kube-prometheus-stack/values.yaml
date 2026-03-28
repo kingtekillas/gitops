@@ -32,6 +32,11 @@ nodeExporter:
   enabled: false
 
 prometheus:
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    hosts:
+      - prometheus.local
   prometheusSpec:
     retention: 3d
     storageSpec:
@@ -48,6 +53,11 @@ nodeExporter:
   enabled: true
 
 alertmanager:
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    hosts:
+      - alertmanager.local
   alertmanagerSpec:
     storage:
       volumeClaimTemplate:
