@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: monitoring-alerts
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  source:
+    repoURL: https://github.com/kingtekillas/gitops.git
+    targetRevision: main
+    path: monitoring/alerts
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
