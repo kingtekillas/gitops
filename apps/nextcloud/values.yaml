@@ -10,11 +10,12 @@ nextcloud:
 ingress:
   enabled: true
   className: traefik
+  path: /
+  pathType: Prefix
   annotations:
     cert-manager.io/cluster-issuer: local-selfsigned
     traefik.ingress.kubernetes.io/router.tls: "true"
-    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
-    traefik.ingress.kubernetes.io/redirect-entry-point: https
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
   tls:
     - secretName: nextcloud-tls
       hosts:
