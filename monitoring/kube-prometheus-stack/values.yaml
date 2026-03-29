@@ -29,7 +29,8 @@ crds:
   enabled: true
 
 nodeExporter:
-  enabled: false
+  # Enabled intentionally so Prometheus can scrape host/node metrics.
+  enabled: true
 
 prometheus:
   ingress:
@@ -48,9 +49,6 @@ prometheus:
           resources:
             requests:
               storage: 10Gi
-
-nodeExporter:
-  enabled: true
 
 alertmanager:
   ingress:
