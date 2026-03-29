@@ -16,6 +16,9 @@ grafana:
     ingressClassName: traefik
     annotations:
       cert-manager.io/cluster-issuer: local-selfsigned
+      traefik.ingress.kubernetes.io/router.tls: "true"
+      traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+      traefik.ingress.kubernetes.io/redirect-entry-point: https
     hosts:
       - grafana.local
     tls:
@@ -36,8 +39,17 @@ prometheus:
   ingress:
     enabled: true
     ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: local-selfsigned
+      traefik.ingress.kubernetes.io/router.tls: "true"
+      traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+      traefik.ingress.kubernetes.io/redirect-entry-point: https
     hosts:
       - prometheus.local
+    tls:
+      - secretName: prometheus-tls
+        hosts:
+          - prometheus.local
   prometheusSpec:
     retention: 3d
     storageSpec:
@@ -54,8 +66,17 @@ alertmanager:
   ingress:
     enabled: true
     ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: local-selfsigned
+      traefik.ingress.kubernetes.io/router.tls: "true"
+      traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+      traefik.ingress.kubernetes.io/redirect-entry-point: https
     hosts:
       - alertmanager.local
+    tls:
+      - secretName: alertmanager-tls
+        hosts:
+          - alertmanager.local
 
   alertmanagerSpec:
     storage:
