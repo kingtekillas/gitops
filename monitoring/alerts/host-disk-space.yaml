@@ -8,8 +8,8 @@ spec:
     - name: host-alerts
       rules:
         - alert: LowDiskSpace
-          expr: (node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"}) * 100 < 15
-          for: 5m
+          expr: (node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"}) * 100 < 98
+          for: 1m
           labels:
             severity: warning
           annotations:
