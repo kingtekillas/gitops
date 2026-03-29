@@ -69,8 +69,8 @@ alertmanager:
           resources:
             requests:
               storage: 2Gi
-
-  config:
+  tplConfig: true
+  stringConfig: |
     global:
       resolve_timeout: 5m
 
@@ -84,11 +84,11 @@ alertmanager:
       - name: telegram
         telegram_configs:
           - bot_token: "8309345928:AAFbBEg5amn0M7eisBWwxzR0sY8_jCzZ58"
-            chat_id: 6452585600
+            chat_id: "6452585600"
             send_resolved: true
             message: |
               🔥 {{ .CommonAnnotations.summary }}
-
+              
               {{ .CommonAnnotations.description }}
-
+              
               Severity: {{ .CommonLabels.severity }}
