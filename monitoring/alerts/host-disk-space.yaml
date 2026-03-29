@@ -4,7 +4,7 @@ metadata:
   name: host-alerts
   namespace: monitoring
   labels:
-    release: monitoring
+    release: monitoring-kube-prometheus-stack
 spec:
   groups:
     - name: host-alerts
