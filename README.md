@@ -13,7 +13,6 @@ root-apps (argocd/Application)
 └── path: applications/
     ├── cert-manager
     ├── local-issuers
-    ├── ingress-nginx
     ├── monitoring-kube-prometheus-stack
     ├── monitoring-alerts
     ├── nextcloud
@@ -26,7 +25,6 @@ root-apps (argocd/Application)
 |---|---|---|
 | `cert-manager` | `cert-manager` | Jetstack cert-manager Helm chart + CRDs |
 | `local-issuers` | `cert-manager` | ClusterIssuer manifests (`infrastructure/issuers/`) |
-| `ingress-nginx` | `ingress-nginx` | NGINX ingress controller Helm chart |
 | `monitoring-kube-prometheus-stack` | `monitoring` | Prometheus, Alertmanager, Grafana |
 | `monitoring-alerts` | `monitoring` | Custom PrometheusRule alerts |
 | `nextcloud` | `nextcloud` | Nextcloud Helm chart, MariaDB, Redis, ingress |
@@ -42,49 +40,29 @@ root-apps (argocd/Application)
    - Installs cert-manager controller/CRDs first.
 2. **issuers** (`local-issuers`, `sync-wave: "1"`)
    - Applies `ClusterIssuer` resources only after cert-manager exists.
-3. **ingress controller** (`ingress-nginx`)
-   - Should be synced after certificate stack is present so ingress TLS references can resolve cleanly.
+3. **ingress controller** (Traefik, managed separately)
+   - Ensure Traefik is installed and exposes both `web` and `websecure` entrypoints.
 
 ### Practical sync-wave guidance
 
 - Current repo already annotates:
   - `cert-manager`: wave `0`
   - `local-issuers`: wave `1`
-- `ingress-nginx` currently has no explicit wave annotation. Operationally, set it to wave `2` if you want strict deterministic ordering during full bootstrap/reconcile events.
-
-Suggested annotation:
-
-```yaml
-metadata:
-  annotations:
-    argocd.argoproj.io/sync-wave: "2"
-```
+- Ingress controller deployment is not currently defined in `applications/` in this repo.
 
 ---
 
-## 3) Ingress controller decision: Traefik vs NGINX
+## 3) Ingress controller decision: Traefik
 
 ### Current state in this repo
 
-- The platform deploys **NGINX Ingress Controller** (`applications/ingress-nginx.yaml`) with controller class configured as `nginx` and marked default in Helm values.
-- Some app values still declare ingress class as **`traefik`** (`apps/nextcloud/values.yaml`, `monitoring/kube-prometheus-stack/values.yaml`).
-
-This mismatch can cause Ingress resources to be ignored (or picked by the wrong controller in mixed clusters).
-
-### Recommended decision
-
-Pick one controller and align all manifests.
-
-- If using **NGINX** (recommended for this repo as currently bootstrapped):
-  - Use `ingressClassName: nginx` / `className: nginx` in all workload values.
-- If switching to **Traefik**:
-  - Stop deploying `ingress-nginx` and set all ingresses to `traefik`.
+- Workload ingresses are configured for **Traefik** (`apps/nextcloud/values.yaml`, `monitoring/kube-prometheus-stack/values.yaml`).
+- Nextcloud, Grafana, Prometheus, and Alertmanager ingresses are configured to serve TLS and redirect HTTP traffic to HTTPS using Traefik ingress annotations.
 
 ### Expected ingress class values
 
 | Controller choice | Ingress class value to use |
 |---|---|
-| NGINX | `nginx` |
 | Traefik | `traefik` |
 
 ---
@@ -194,9 +172,8 @@ kubectl -n argocd get applications -w
 4. Validate core services:
 
 ```bash
-kubectl get ns cert-manager ingress-nginx monitoring nextcloud
+kubectl get ns cert-manager monitoring nextcloud
 kubectl -n cert-manager get pods
-kubectl -n ingress-nginx get pods
 kubectl -n monitoring get pods
 kubectl -n nextcloud get pods
 ```
