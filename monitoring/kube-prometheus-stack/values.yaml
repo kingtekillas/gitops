@@ -69,9 +69,8 @@ alertmanager:
           resources:
             requests:
               storage: 2Gi
-  
-  tplConfig: true
-  stringConfig: |
+
+  config:
     global:
       resolve_timeout: 5m
 
@@ -89,7 +88,7 @@ alertmanager:
             send_resolved: true
             message: |
               🔥 {{ .CommonAnnotations.summary }}
-              
+
               {{ .CommonAnnotations.description }}
-              
+
               Severity: {{ .CommonLabels.severity }}
