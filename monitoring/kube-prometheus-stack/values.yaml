@@ -58,6 +58,7 @@ alertmanager:
     ingressClassName: traefik
     hosts:
       - alertmanager.local
+
   alertmanagerSpec:
     storage:
       volumeClaimTemplate:
@@ -68,7 +69,8 @@ alertmanager:
           resources:
             requests:
               storage: 2Gi
-    config:
+
+  config:
     global:
       resolve_timeout: 5m
 
