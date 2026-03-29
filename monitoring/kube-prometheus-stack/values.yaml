@@ -83,8 +83,8 @@ alertmanager:
     receivers:
       - name: telegram
         telegram_configs:
-          - bot_token: "8309345928:AAFbBEg5amn0M7eisBWwxzR0sY8_jCzZ58"
-            chat_id: "6452585600"
+          - bot_token: "ommited"
+            chat_id: "ommited"
             send_resolved: true
             message: |
               🔥 {{ .CommonAnnotations.summary }}
