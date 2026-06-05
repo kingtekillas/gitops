@@ -1,0 +1,72 @@
+name: validate
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+
+      - name: Validate YAML and JSON syntax
+        run: |
+          python -m pip install --disable-pip-version-check --quiet pyyaml
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import yaml
+
+          for path in Path('.').rglob('*.json'):
+              if '.git' in path.parts:
+                  continue
+              with path.open('r', encoding='utf-8') as handle:
+                  json.load(handle)
+
+          for path in list(Path('.').rglob('*.yaml')) + list(Path('.').rglob('*.yml')):
+              if '.git' in path.parts:
+                  continue
+              with path.open('r', encoding='utf-8') as handle:
+                  list(yaml.safe_load_all(handle))
+          PY
+
+      - name: Render Helm charts
+        run: |
+          set -euo pipefail
+
+          helm repo add jetstack https://charts.jetstack.io
+          helm repo add nextcloud https://nextcloud.github.io/helm/
+          helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+          helm repo update
+
+          cert_manager_version=$(awk '/chart: cert-manager/{found=1} found && /targetRevision:/{print $2; exit}' applications/cert-manager.yaml)
+          nextcloud_version=$(awk '/chart: nextcloud/{found=1} found && /targetRevision:/{print $2; exit}' applications/nextcloud.yaml)
+          prometheus_version=$(awk '/chart: kube-prometheus-stack/{found=1} found && /targetRevision:/{print $2; exit}' applications/monitoring-kube-prometheus-stack.yaml)
+
+          helm template cert-manager jetstack/cert-manager \
+            --namespace cert-manager \
+            --version "$cert_manager_version" \
+            --include-crds \
+            --values infrastructure/cert-manager/values.yaml \
+            >/dev/null
+
+          helm template nextcloud nextcloud/nextcloud \
+            --namespace nextcloud \
+            --version "$nextcloud_version" \
+            --values apps/nextcloud/values.yaml \
+            >/dev/null
+
+          helm template monitoring prometheus-community/kube-prometheus-stack \
+            --namespace monitoring \
+            --version "$prometheus_version" \
+            --values monitoring/kube-prometheus-stack/values.yaml \
+            >/dev/null
