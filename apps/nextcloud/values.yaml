@@ -27,6 +27,30 @@ persistence:
   accessMode: ReadWriteOnce
   size: 20Gi
 
+startupProbe:
+  enabled: true
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 90
+  successThreshold: 1
+
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 600
+  periodSeconds: 30
+  timeoutSeconds: 10
+  failureThreshold: 6
+  successThreshold: 1
+
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 120
+  periodSeconds: 15
+  timeoutSeconds: 10
+  failureThreshold: 40
+  successThreshold: 1
+
 internalDatabase:
   enabled: false
 
@@ -51,6 +75,18 @@ mariadb:
       enabled: true
       storageClass: local-path
       size: 8Gi
+    livenessProbe:
+      enabled: true
+      initialDelaySeconds: 120
+      periodSeconds: 20
+      timeoutSeconds: 10
+      failureThreshold: 10
+    readinessProbe:
+      enabled: true
+      initialDelaySeconds: 60
+      periodSeconds: 20
+      timeoutSeconds: 10
+      failureThreshold: 10
   image:
     registry: docker.io
     repository: bitnamilegacy/mariadb
@@ -58,6 +94,7 @@ mariadb:
 
 redis:
   enabled: true
+  architecture: standalone
   auth:
     password: change-redis-password
   # image:
@@ -67,6 +104,31 @@ redis:
   master:
     persistence:
       enabled: true
-  replica:
-    persistence:
+    livenessProbe:
       enabled: true
+      initialDelaySeconds: 60
+      periodSeconds: 20
+      timeoutSeconds: 10
+      failureThreshold: 10
+    readinessProbe:
+      enabled: true
+      initialDelaySeconds: 30
+      periodSeconds: 20
+      timeoutSeconds: 10
+      failureThreshold: 10
+  replica:
+    replicaCount: 0
+    persistence:
+      enabled: false
+    livenessProbe:
+      enabled: true
+      initialDelaySeconds: 60
+      periodSeconds: 20
+      timeoutSeconds: 10
+      failureThreshold: 10
+    readinessProbe:
+      enabled: true
+      initialDelaySeconds: 30
+      periodSeconds: 20
+      timeoutSeconds: 10
+      failureThreshold: 10
