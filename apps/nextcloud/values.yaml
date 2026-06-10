@@ -1,6 +1,14 @@
 image:
   flavor: apache
 
+replicaCount: 1
+
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 0
+
 nextcloud:
   host: nextcloud.local
   username: admin
